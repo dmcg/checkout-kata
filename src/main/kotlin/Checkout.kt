@@ -1,30 +1,25 @@
-class Checkout {
-    var codes = mutableListOf<String>()
+typealias PriceRule = (List<String>) -> Int
+
+class Checkout(private val priceRules: List<PriceRule>) {
+    val codes = mutableListOf<String>()
     var total: Int = 0
 
     fun scan(code: String) {
         codes.add(code)
-        total = 0
-
-        val aPrice = discountedPriceFor("A", 50, 20, 3)
-        total += aPrice
-
-        val bPrice = discountedPriceFor("B", 30, 15, 2)
-        total += bPrice
-
-        val cPrice = undiscountedPriceFor("C", 20)
-        total += cPrice
-
-        val dPrice = undiscountedPriceFor("D", 15)
-        total += dPrice
+        total = priceRules.sumOf { it.invoke(this.codes) }
     }
+}
 
-    private fun undiscountedPriceFor(code: String, basePrice: Int): Int = basePrice * codes.count { it == code }
-
-    private fun discountedPriceFor(code: String, basePrice: Int, discountAmount: Int, discountPer: Int): Int {
+fun discountedPriceRule(
+    code: String,
+    basePrice: Int,
+    discountAmount: Int,
+    discountPer: Int,
+): PriceRule =
+    { codes ->
         val scannedCount = codes.count { it == code }
         val basePrice = basePrice * scannedCount
         val discount = discountAmount * (scannedCount / discountPer)
-        return basePrice - discount
+        basePrice - discount
     }
-}
+

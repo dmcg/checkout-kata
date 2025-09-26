@@ -60,12 +60,15 @@ class CheckoutTests {
     }
 }
 
-private fun price(codes: String): Int {
-    val checkout = Checkout()
-    checkout.scanAll(codes)
-    return checkout.total
-}
+private val rules: List<PriceRule> = listOf(
+    discountedPriceRule("A", 50, 20, 3),
+    discountedPriceRule("B", 30, 15, 2),
+    discountedPriceRule("C", 20, 0, 1),
+    discountedPriceRule("D", 15, 0, 1),
+)
 
+private fun price(codes: String): Int =
+    Checkout(rules).apply { scanAll(codes) }.total
 
 private fun Checkout.scanAll(codes: String) {
     codes.forEach { scan(it.toString()) }
