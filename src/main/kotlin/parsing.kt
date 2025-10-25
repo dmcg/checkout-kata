@@ -84,7 +84,7 @@ fun parseRulesWithAi(apiKey: String, rulesAsString: String): List<PriceRule> {
         .build()
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
     if (response.statusCode() !in 200..299) {
-        throw IllegalStateException($$"HTTP ${response.statusCode()} from Anthropic: ${response.body().take(500)}")
+        throw IllegalStateException("HTTP ${response.statusCode()} from Anthropic: ${response.body().take(500)}")
     }
 
     // Read the response JSON using kotlinx.serialization
