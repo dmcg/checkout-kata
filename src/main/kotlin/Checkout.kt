@@ -1,6 +1,6 @@
 
 
-typealias PriceRule = (List<String>) -> Int
+typealias PriceRule = (codes: List<String>) -> Int
 
 class Checkout(private val priceRules: List<PriceRule>) {
     val codes = mutableListOf<String>()
