@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -12,6 +13,7 @@ class AiParsingTests {
     val apiKey =
         "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"
 
+    @Disabled("Need to set up a new api key")
     @Test fun parseRules() {
         val expectedRules: List<PriceRule> = listOf(
             DiscountedPriceRule("A", 50, 20, 3),
