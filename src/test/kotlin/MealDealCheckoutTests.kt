@@ -84,10 +84,4 @@ class MealDeal(val products: Set<String>, val discount: Int) : PriceRule {
         } else
             emptyList()
     }
-
 }
-
-private fun Checkout.scanAll(codes: String) {
-    codes.forEach { scan(it.toString()) }
-}
-

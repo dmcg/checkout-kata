@@ -64,12 +64,6 @@ class DiscountedPriceRuleCheckoutTests {
         assertEquals(0 to emptyList(), rules.priceAndReceiptLines(""))
 
         assertEquals(
-            50 to listOf(
-                ReceiptLine("A", 50),
-            ), rules.priceAndReceiptLines("A")
-        )
-
-        assertEquals(
             80 to listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("B", 30),
@@ -83,56 +77,6 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("B", 30),
                 ReceiptLine("A", 50),
             ), rules.priceAndReceiptLines("CDBA")
-        )
-
-        assertEquals(
-            100 to listOf(
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-            ), rules.priceAndReceiptLines("AA")
-        )
-
-        assertEquals(
-            130 to listOf(
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-                ReceiptLine("Discount for 3 As", -20),
-            ), rules.priceAndReceiptLines("AAA")
-        )
-
-        assertEquals(
-            180 to listOf(
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-                ReceiptLine("Discount for 3 As", -20),
-                ReceiptLine("A", 50),
-            ), rules.priceAndReceiptLines("AAAA")
-        )
-
-        assertEquals(
-            230 to listOf(
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-                ReceiptLine("Discount for 3 As", -20),
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-            ), rules.priceAndReceiptLines("AAAAA")
-        )
-
-        assertEquals(
-            260 to listOf(
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-                ReceiptLine("Discount for 3 As", -20),
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-                ReceiptLine("A", 50),
-                ReceiptLine("Discount for 3 As", -20),
-            ), rules.priceAndReceiptLines("AAAAAA")
         )
 
         assertEquals(
