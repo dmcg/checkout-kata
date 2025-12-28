@@ -12,7 +12,10 @@ class DiscountedPriceRuleCheckoutTests {
 
     @Test
     fun `test no items`() {
-        assertEquals(0 to emptyList(), rules.priceAndReceiptLines(""))
+        assertEquals(
+            0 to emptyList(),
+            rules.priceAndReceiptLines("")
+        )
     }
 
     @Test
@@ -20,13 +23,15 @@ class DiscountedPriceRuleCheckoutTests {
         assertEquals(
             50 to listOf(
                 ReceiptLine("A", 50)
-            ), rules.priceAndReceiptLines("A")
+            ),
+            rules.priceAndReceiptLines("A")
         )
         assertEquals(
             100 to listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("A", 50),
-            ), rules.priceAndReceiptLines("AA")
+            ),
+            rules.priceAndReceiptLines("AA")
         )
         assertEquals(
             130 to listOf(
@@ -34,7 +39,8 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
-            ), rules.priceAndReceiptLines("AAA")
+            ),
+            rules.priceAndReceiptLines("AAA")
         )
         assertEquals(
             180 to listOf(
@@ -43,7 +49,8 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
                 ReceiptLine("A", 50),
-            ), rules.priceAndReceiptLines("AAAA")
+            ),
+            rules.priceAndReceiptLines("AAAA")
         )
         assertEquals(
             260 to listOf(
@@ -55,19 +62,24 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
-            ), rules.priceAndReceiptLines("AAAAAA")
+            ),
+            rules.priceAndReceiptLines("AAAAAA")
         )
     }
 
     @Test
     fun mixed() {
-        assertEquals(0 to emptyList(), rules.priceAndReceiptLines(""))
+        assertEquals(
+            0 to emptyList(),
+            rules.priceAndReceiptLines("")
+        )
 
         assertEquals(
             80 to listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("B", 30),
-            ), rules.priceAndReceiptLines("AB")
+            ),
+            rules.priceAndReceiptLines("AB")
         )
 
         assertEquals(
@@ -76,7 +88,8 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("D", 15),
                 ReceiptLine("B", 30),
                 ReceiptLine("A", 50),
-            ), rules.priceAndReceiptLines("CDBA")
+            ),
+            rules.priceAndReceiptLines("CDBA")
         )
 
         assertEquals(
@@ -86,7 +99,8 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
                 ReceiptLine("B", 30),
-            ), rules.priceAndReceiptLines("AAAB")
+            ),
+            rules.priceAndReceiptLines("AAAB")
         )
 
         assertEquals(
@@ -98,7 +112,8 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("B", 30),
                 ReceiptLine("B", 30),
                 ReceiptLine("Discount for 2 Bs", -15),
-            ), rules.priceAndReceiptLines("AAABB")
+            ),
+            rules.priceAndReceiptLines("AAABB")
         )
 
         assertEquals(
@@ -111,7 +126,8 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("B", 30),
                 ReceiptLine("Discount for 2 Bs", -15),
                 ReceiptLine("D", 15),
-            ), rules.priceAndReceiptLines("AAABBD")
+            ),
+            rules.priceAndReceiptLines("AAABBD")
         )
 
         assertEquals(
@@ -124,7 +140,8 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("Discount for 2 Bs", -15),
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
-            ), rules.priceAndReceiptLines("DABABA")
+            ),
+            rules.priceAndReceiptLines("DABABA")
         )
     }
 }
