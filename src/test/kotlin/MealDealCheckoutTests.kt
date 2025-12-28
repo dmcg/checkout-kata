@@ -3,7 +3,7 @@ import kotlin.test.assertEquals
 
 class MealDealCheckoutTests {
 
-    private val rules: List<PriceRule> =  listOf(
+    private val rules: List<PriceRule> = listOf(
         DiscountedPriceRule("A", 50, 0, 1),
         DiscountedPriceRule("B", 30, 0, 1),
         DiscountedPriceRule("C", 20, 0, 1),
@@ -12,27 +12,58 @@ class MealDealCheckoutTests {
     )
 
     @Test
-    fun `test no items`() {
-        assertEquals(0, price(""))
-    }
-
-    @Test
     fun `test meal deal`() {
-        assertEquals(0, price(""))
-        assertEquals(50, price("A"))
-        assertEquals(80, price("AB"))
-        assertEquals(80, price("ABC"))
-        assertEquals(110, price("ABCB"))
-        assertEquals(130, price("ABCBC"))
-        assertEquals(160, price("ABCBCA"))
+        assertEquals(0 to emptyList(), rules.priceAndReceiptLines(""))
+        assertEquals(
+            50 to listOf(
+                ReceiptLine("A", 50),
+            ),
+            rules.priceAndReceiptLines("A")
+        )
+        assertEquals(
+            80 to listOf(
+                ReceiptLine("A", 50),
+                ReceiptLine("B", 30),
+            ),
+            rules.priceAndReceiptLines("AB")
+        )
+        assertEquals(
+            80 to listOf(
+                ReceiptLine("A", 50),
+                ReceiptLine("B", 30),
+                ReceiptLine("C", 20),
+                ReceiptLine("Meal Deal ABC", -20),
+            ),
+            rules.priceAndReceiptLines("ABC")
+        )
+        assertEquals(
+            110 to listOf(
+                ReceiptLine("A", 50),
+                ReceiptLine("B", 30),
+                ReceiptLine("C", 20),
+                ReceiptLine("Meal Deal ABC", -20),
+                ReceiptLine("B", 30),
+            ),
+            rules.priceAndReceiptLines("ABCB")
+        )
+        assertEquals(
+            160 to listOf(
+                ReceiptLine("A", 50),
+                ReceiptLine("B", 30),
+                ReceiptLine("C", 20),
+                ReceiptLine("Meal Deal ABC", -20),
+                ReceiptLine("B", 30),
+                ReceiptLine("C", 20),
+                ReceiptLine("A", 50),
+                ReceiptLine("Meal Deal ABC", -20),
+            ),
+            rules.priceAndReceiptLines("ABCBCA")
+        )
     }
-
-    private fun price(codes: String): Int =
-        Checkout(rules).apply { scanAll(codes) }.total
 }
 
-class MealDeal(val products: Set<String>, val discount: Int) : PriceRule{
-    override fun invoke(codes: List<String>): Int {
+class MealDeal(val products: Set<String>, val discount: Int) : PriceRule {
+    private fun discountFor(codes: List<String>): Int {
         // Count how many of each required product has been scanned
         val countsPerProduct = products.associateWith { code ->
             codes.count { it == code }
@@ -42,6 +73,16 @@ class MealDeal(val products: Set<String>, val discount: Int) : PriceRule{
         val numberOfDeals = countsPerProduct.values.minOrNull() ?: 0
 
         return -discount * numberOfDeals
+    }
+
+    override fun receiptLines(codes: List<String>): List<ReceiptLine> {
+        val oldDiscount = - discountFor(codes.dropLast(1))
+        val currentDiscount = - discountFor(codes)
+        return if (currentDiscount > oldDiscount) {
+            val name = products.joinToString("")
+            listOf(ReceiptLine("Meal Deal $name", -(currentDiscount - oldDiscount)))
+        } else
+            emptyList()
     }
 
 }
