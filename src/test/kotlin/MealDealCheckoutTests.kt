@@ -13,19 +13,22 @@ class MealDealCheckoutTests {
 
     @Test
     fun `test meal deal`() {
-        assertEquals(0 to emptyList(), rules.priceAndReceiptLines(""))
+        assertEquals(
+            0 to emptyList(),
+            priceAndReceiptLines(rules, "")
+        )
         assertEquals(
             50 to listOf(
                 ReceiptLine("A", 50),
             ),
-            rules.priceAndReceiptLines("A")
+            priceAndReceiptLines(rules, "A")
         )
         assertEquals(
             80 to listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("B", 30),
             ),
-            rules.priceAndReceiptLines("AB")
+            priceAndReceiptLines(rules, "AB")
         )
         assertEquals(
             80 to listOf(
@@ -34,7 +37,7 @@ class MealDealCheckoutTests {
                 ReceiptLine("C", 20),
                 ReceiptLine("Meal Deal ABC", -20),
             ),
-            rules.priceAndReceiptLines("ABC")
+            priceAndReceiptLines(rules, "ABC")
         )
         assertEquals(
             110 to listOf(
@@ -44,7 +47,7 @@ class MealDealCheckoutTests {
                 ReceiptLine("Meal Deal ABC", -20),
                 ReceiptLine("B", 30),
             ),
-            rules.priceAndReceiptLines("ABCB")
+            priceAndReceiptLines(rules, "ABCB")
         )
         assertEquals(
             160 to listOf(
@@ -57,7 +60,7 @@ class MealDealCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("Meal Deal ABC", -20),
             ),
-            rules.priceAndReceiptLines("ABCBCA")
+            priceAndReceiptLines(rules, "ABCBCA")
         )
     }
 }

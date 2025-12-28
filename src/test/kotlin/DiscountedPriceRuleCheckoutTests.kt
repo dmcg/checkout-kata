@@ -14,7 +14,7 @@ class DiscountedPriceRuleCheckoutTests {
     fun `test no items`() {
         assertEquals(
             0 to emptyList(),
-            rules.priceAndReceiptLines("")
+            priceAndReceiptLines(rules, "")
         )
     }
 
@@ -24,14 +24,14 @@ class DiscountedPriceRuleCheckoutTests {
             50 to listOf(
                 ReceiptLine("A", 50)
             ),
-            rules.priceAndReceiptLines("A")
+            priceAndReceiptLines(rules, "A")
         )
         assertEquals(
             100 to listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("A", 50),
             ),
-            rules.priceAndReceiptLines("AA")
+            priceAndReceiptLines(rules, "AA")
         )
         assertEquals(
             130 to listOf(
@@ -40,7 +40,7 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
             ),
-            rules.priceAndReceiptLines("AAA")
+            priceAndReceiptLines(rules, "AAA")
         )
         assertEquals(
             180 to listOf(
@@ -50,7 +50,7 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("Discount for 3 As", -20),
                 ReceiptLine("A", 50),
             ),
-            rules.priceAndReceiptLines("AAAA")
+            priceAndReceiptLines(rules, "AAAA")
         )
         assertEquals(
             260 to listOf(
@@ -63,7 +63,7 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
             ),
-            rules.priceAndReceiptLines("AAAAAA")
+            priceAndReceiptLines(rules, "AAAAAA")
         )
     }
 
@@ -71,7 +71,7 @@ class DiscountedPriceRuleCheckoutTests {
     fun mixed() {
         assertEquals(
             0 to emptyList(),
-            rules.priceAndReceiptLines("")
+            priceAndReceiptLines(rules, "")
         )
 
         assertEquals(
@@ -79,7 +79,7 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("B", 30),
             ),
-            rules.priceAndReceiptLines("AB")
+            priceAndReceiptLines(rules, "AB")
         )
 
         assertEquals(
@@ -89,7 +89,7 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("B", 30),
                 ReceiptLine("A", 50),
             ),
-            rules.priceAndReceiptLines("CDBA")
+            priceAndReceiptLines(rules, "CDBA")
         )
 
         assertEquals(
@@ -100,7 +100,7 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("Discount for 3 As", -20),
                 ReceiptLine("B", 30),
             ),
-            rules.priceAndReceiptLines("AAAB")
+            priceAndReceiptLines(rules, "AAAB")
         )
 
         assertEquals(
@@ -113,7 +113,7 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("B", 30),
                 ReceiptLine("Discount for 2 Bs", -15),
             ),
-            rules.priceAndReceiptLines("AAABB")
+            priceAndReceiptLines(rules, "AAABB")
         )
 
         assertEquals(
@@ -127,7 +127,7 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("Discount for 2 Bs", -15),
                 ReceiptLine("D", 15),
             ),
-            rules.priceAndReceiptLines("AAABBD")
+            priceAndReceiptLines(rules, "AAABBD")
         )
 
         assertEquals(
@@ -141,13 +141,14 @@ class DiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
             ),
-            rules.priceAndReceiptLines("DABABA")
+            priceAndReceiptLines(rules, "DABABA")
         )
     }
+
 }
 
-fun List<PriceRule>.priceAndReceiptLines(codes: String): Pair<Int, List<ReceiptLine>> =
-    Checkout(this).apply { scanAll(codes) }.let { it.total to it.receiptLines }
+fun priceAndReceiptLines(rules: List<PriceRule>, codes: String): Pair<Int, List<ReceiptLine>> =
+    Checkout(rules).apply { scanAll(codes) }.let { it.total to it.receiptLines }
 
 private fun Checkout.scanAll(codes: String) {
     codes.forEach { scan(it.toString()) }
