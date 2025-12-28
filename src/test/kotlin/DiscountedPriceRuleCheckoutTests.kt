@@ -10,8 +10,6 @@ class DiscountedPriceRuleCheckoutTests {
         PlainPriceRule("D", 15),
         DiscountedPriceRule("A", 20, 3),
         DiscountedPriceRule("B", 15, 2),
-        DiscountedPriceRule("C", 0, 1),
-        DiscountedPriceRule("D", 0, 1),
     )
 
     @Test
