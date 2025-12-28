@@ -4,10 +4,10 @@ import kotlin.test.assertEquals
 class MealDealCheckoutTests {
 
     private val rules: List<PriceRule> = listOf(
-        DiscountedPriceRule("A", 50, 0, 1),
-        DiscountedPriceRule("B", 30, 0, 1),
-        DiscountedPriceRule("C", 20, 0, 1),
-        DiscountedPriceRule("D", 15, 0, 1),
+        PlainPriceRule("A", 50),
+        PlainPriceRule("B", 30),
+        PlainPriceRule("C", 20),
+        PlainPriceRule("D", 15),
         MealDeal(products = setOf("A", "B", "C"), discount = 20)
     )
 

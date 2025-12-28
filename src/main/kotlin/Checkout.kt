@@ -1,5 +1,5 @@
 interface PriceRule {
-    fun receiptLines(codes: List<String>): List<ReceiptLine> = emptyList()
+    fun receiptLine(codes: List<String>): ReceiptLine?
 }
 
 class Checkout(private val priceRules: List<PriceRule>) {
@@ -9,28 +9,32 @@ class Checkout(private val priceRules: List<PriceRule>) {
 
     fun scan(code: String) {
         codes.add(code)
-        receiptLines.addAll(priceRules.flatMap { it.receiptLines(codes) })
+        receiptLines.addAll(priceRules.mapNotNull { it.receiptLine(codes) })
         total = receiptLines.sumOf { it.amount }
     }
 }
 
 data class ReceiptLine(val description: String, val amount: Int)
 
-data class DiscountedPriceRule(
+data class PlainPriceRule(
     private val code: String,
     private val basePrice: Int,
+) : PriceRule {
+    override fun receiptLine(codes: List<String>): ReceiptLine? =
+        if (codes.last() == code) {
+            ReceiptLine(code, basePrice)
+        } else null
+}
+
+data class DiscountedPriceRule(
+    private val code: String,
     private val discountAmount: Int,
     private val discountPer: Int,
 ) : PriceRule {
-    override fun receiptLines(codes: List<String>): List<ReceiptLine> =
-        if (codes.last() == code) {
-            if (discountAmount != 0 && codes.count { it == code } % discountPer == 0) {
-                listOf(
-                    ReceiptLine(code, basePrice),
-                    ReceiptLine("Discount for $discountPer ${this.code}s", -discountAmount)
-                )
-            } else {
-                listOf(ReceiptLine(code, basePrice))
-            }
-        } else emptyList()
+    override fun receiptLine(codes: List<String>): ReceiptLine? =
+        if (codes.last() == code && discountAmount != 0 && codes.count { it == code } % discountPer == 0) {
+            ReceiptLine("Discount for $discountPer ${this.code}s", -discountAmount)
+        } else {
+            null
+        }
 }

@@ -16,10 +16,10 @@ class AiParsingTests {
     @Disabled("Need to set up a new api key")
     @Test fun parseRules() {
         val expectedRules: List<PriceRule> = listOf(
-            DiscountedPriceRule("A", 50, 20, 3),
-            DiscountedPriceRule("B", 30, 15, 2),
-            DiscountedPriceRule("C", 20, 0, 1),
-            DiscountedPriceRule("D", 15, 0, 1),
+            DiscountedPriceRule("A", 20, 3),
+            DiscountedPriceRule("B", 15, 2),
+            DiscountedPriceRule("C", 0, 1),
+            DiscountedPriceRule("D", 0, 1),
         )
         assertEquals(expectedRules, parseRulesWithAi(apiKey,rulesAsString))
     }

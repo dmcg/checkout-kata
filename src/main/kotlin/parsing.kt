@@ -1,15 +1,11 @@
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.*
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Duration
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonArray
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
 
 fun parseRules(rulesAsString: String): List<PriceRule> {
     val itemLineRegex = Regex(
@@ -19,7 +15,7 @@ fun parseRules(rulesAsString: String): List<PriceRule> {
 
     return rulesAsString
         .lines()
-        .mapNotNull { line ->
+        .flatMap { line ->
             val match = itemLineRegex.find(line)
             if (match != null) {
                 val (codeStr, unitStr, nStr, specialStr) = match.destructured
@@ -29,12 +25,17 @@ fun parseRules(rulesAsString: String): List<PriceRule> {
                     val discountPer = nStr.toInt()
                     val special = specialStr.toInt()
                     val discountAmount = (unit * nStr.toInt()) - special
-                    DiscountedPriceRule(code, unit, discountAmount, discountPer)
+                    listOf(
+                        PlainPriceRule(code, unit),
+                        DiscountedPriceRule(code, discountAmount, discountPer)
+                    )
                 } else {
-                    DiscountedPriceRule(code, unit, 0, 1)
+                    listOf(
+                        PlainPriceRule(code, unit)
+                    )
                 }
             } else {
-                null
+                emptyList()
             }
         }
 }
@@ -60,7 +61,10 @@ fun parseRulesWithAi(apiKey: String, rulesAsString: String): List<PriceRule> {
         put("model", "claude-3-5-sonnet-latest")
         put("max_tokens", 256)
         put("temperature", 0)
-        put("system", "You are a precise extraction engine. Output strictly the requested JSON with correct integers and field names only.")
+        put(
+            "system",
+            "You are a precise extraction engine. Output strictly the requested JSON with correct integers and field names only."
+        )
         put("messages", buildJsonArray {
             add(buildJsonObject {
                 put("role", "user")
@@ -94,7 +98,7 @@ fun parseRulesWithAi(apiKey: String, rulesAsString: String): List<PriceRule> {
 
     // The assistant returns the pure JSON array of rules; parse it with kotlinx.serialization
     return jsonCodec.decodeFromString<List<RuleDto>>(assistantText).map { dto ->
-        DiscountedPriceRule(dto.code.uppercase(), dto.unit, dto.discountAmount, dto.discountPer)
+        DiscountedPriceRule(dto.code.uppercase(), dto.discountAmount, dto.discountPer)
     }
 }
 
@@ -106,7 +110,7 @@ private data class ContentBlock(
 
 @Serializable
 private data class MessageResponse(
-    val content: List<ContentBlock> = emptyList()
+    val content: List<ContentBlock> = emptyList(),
 )
 
 @Serializable

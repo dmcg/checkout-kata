@@ -11,13 +11,13 @@ class MealDeal(val products: Set<String>, val discount: Int) : PriceRule {
         return -discount * numberOfDeals
     }
 
-    override fun receiptLines(codes: List<String>): List<ReceiptLine> {
+    override fun receiptLine(codes: List<String>): ReceiptLine? {
         val oldDiscount = - discountFor(codes.dropLast(1))
         val currentDiscount = - discountFor(codes)
         return if (currentDiscount > oldDiscount) {
             val name = products.joinToString("")
-            listOf(ReceiptLine("Meal Deal $name", -(currentDiscount - oldDiscount)))
+            ReceiptLine("Meal Deal $name", -(currentDiscount - oldDiscount))
         } else
-            emptyList()
+            null
     }
 }
