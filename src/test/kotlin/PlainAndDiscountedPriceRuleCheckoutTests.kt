@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class DiscountedPriceRuleCheckoutTests {
+class PlainAndDiscountedPriceRuleCheckoutTests {
 
     private val rules: List<PriceRule> = listOf(
         PlainPriceRule("A", 50),
