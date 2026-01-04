@@ -14,7 +14,8 @@ class MealDealCheckoutTests {
     @Test
     fun `test meal deal`() {
         assertEquals(
-            0 to emptyList(),
+            0 to listOf(
+            ),
             priceAndReceiptLines(rules, "")
         )
         assertEquals(

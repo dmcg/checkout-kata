@@ -15,7 +15,8 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
     @Test
     fun `test no items`() {
         assertEquals(
-            0 to emptyList(),
+            0 to listOf(
+            ),
             priceAndReceiptLines(rules, "")
         )
     }
@@ -71,11 +72,6 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
 
     @Test
     fun mixed() {
-        assertEquals(
-            0 to emptyList(),
-            priceAndReceiptLines(rules, "")
-        )
-
         assertEquals(
             80 to listOf(
                 ReceiptLine("A", 50),
