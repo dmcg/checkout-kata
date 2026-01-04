@@ -9,8 +9,14 @@ class Checkout(private val priceRules: List<PriceRule>) {
 
     fun scan(code: String) {
         codes.add(code)
-        val itemsCounts: Map<String, Int> = codes.groupingBy { it }.eachCount()
-        receiptLines.addAll(priceRules.mapNotNull { it.receiptLine(code, itemsCounts) })
+        val itemsCounts: Map<String, Int> = codes.groupingBy {
+            it
+        }.eachCount()
+        receiptLines.addAll(
+            priceRules.mapNotNull {
+                it.receiptLine(code, itemsCounts)
+            }
+        )
         total = receiptLines.sumOf { it.amount }
     }
 }
@@ -22,9 +28,10 @@ data class PlainPriceRule(
     private val basePrice: Int,
 ) : PriceRule {
     override fun receiptLine(currentCode: String, itemsCounts: Map<String, Int>): ReceiptLine? =
-        if (currentCode == code) {
-            ReceiptLine(code, basePrice)
-        } else null
+        when (currentCode) {
+            code -> ReceiptLine(code, basePrice)
+            else -> null
+        }
 }
 
 data class DiscountedPriceRule(
@@ -36,10 +43,9 @@ data class DiscountedPriceRule(
         if (currentCode != code)
             return null
         val itemQuantity = (itemsCounts[currentCode] ?: error("Code $currentCode is unexpectedly not in map"))
-        return if (itemQuantity % discountPer == 0) {
-            ReceiptLine("Discount for $discountPer ${this.code}s", -discountAmount)
-        } else {
-            null
+        return when {
+            itemQuantity % discountPer == 0 -> ReceiptLine("Discount for $discountPer ${this.code}s", -discountAmount)
+            else -> null
         }
     }
 }

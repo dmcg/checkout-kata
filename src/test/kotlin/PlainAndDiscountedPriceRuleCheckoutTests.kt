@@ -146,7 +146,11 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
 }
 
 fun priceAndReceiptLines(rules: List<PriceRule>, codes: String): Pair<Int, List<ReceiptLine>> =
-    Checkout(rules).apply { scanAll(codes) }.let { it.total to it.receiptLines }
+    Checkout(rules).apply {
+        scanAll(codes)
+    }.let {
+        it.total to it.receiptLines
+    }
 
 private fun Checkout.scanAll(codes: String) {
     codes.forEach { scan(it.toString()) }
