@@ -3,21 +3,23 @@ interface PriceRule {
 }
 
 class Checkout(private val priceRules: List<PriceRule>) {
-    val receiptLines: MutableList<ReceiptLine> = mutableListOf()
+    val itemLines: MutableList<ReceiptLine> = mutableListOf()
     val codes = mutableListOf<String>()
     var total: Int = 0
+    val receiptLines: List<ReceiptLine>
+        get() = itemLines + ReceiptLine("Total", total)
 
     fun scan(code: String) {
         codes.add(code)
         val itemsCounts: Map<String, Int> = codes.groupingBy {
             it
         }.eachCount()
-        receiptLines.addAll(
+        itemLines.addAll(
             priceRules.mapNotNull {
                 it.receiptLine(code, itemsCounts)
             }
         )
-        total = receiptLines.sumOf { it.amount }
+        total = itemLines.sumOf { it.amount }
     }
 }
 

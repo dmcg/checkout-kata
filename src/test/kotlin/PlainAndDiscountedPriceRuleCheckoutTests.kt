@@ -16,6 +16,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
     fun `test no items`() {
         assertEquals(
             0 to listOf(
+                ReceiptLine("Total", 0)
             ),
             priceAndReceiptLines(rules, "")
         )
@@ -25,7 +26,8 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
     fun `test As`() {
         assertEquals(
             50 to listOf(
-                ReceiptLine("A", 50)
+                ReceiptLine("A", 50),
+                ReceiptLine("Total", 50)
             ),
             priceAndReceiptLines(rules, "A")
         )
@@ -33,6 +35,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
             100 to listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("A", 50),
+                ReceiptLine("Total", 100)
             ),
             priceAndReceiptLines(rules, "AA")
         )
@@ -42,6 +45,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
+                ReceiptLine("Total", 130)
             ),
             priceAndReceiptLines(rules, "AAA")
         )
@@ -52,6 +56,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
                 ReceiptLine("A", 50),
+                ReceiptLine("Total", 180)
             ),
             priceAndReceiptLines(rules, "AAAA")
         )
@@ -65,6 +70,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
+                ReceiptLine("Total", 260)
             ),
             priceAndReceiptLines(rules, "AAAAAA")
         )
@@ -76,6 +82,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
             80 to listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("B", 30),
+                ReceiptLine("Total", 80)
             ),
             priceAndReceiptLines(rules, "AB")
         )
@@ -86,6 +93,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
                 ReceiptLine("D", 15),
                 ReceiptLine("B", 30),
                 ReceiptLine("A", 50),
+                ReceiptLine("Total", 115)
             ),
             priceAndReceiptLines(rules, "CDBA")
         )
@@ -97,6 +105,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
                 ReceiptLine("B", 30),
+                ReceiptLine("Total", 160)
             ),
             priceAndReceiptLines(rules, "AAAB")
         )
@@ -110,6 +119,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
                 ReceiptLine("B", 30),
                 ReceiptLine("B", 30),
                 ReceiptLine("Discount for 2 Bs", -15),
+                ReceiptLine("Total", 175)
             ),
             priceAndReceiptLines(rules, "AAABB")
         )
@@ -124,6 +134,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
                 ReceiptLine("B", 30),
                 ReceiptLine("Discount for 2 Bs", -15),
                 ReceiptLine("D", 15),
+                ReceiptLine("Total", 190)
             ),
             priceAndReceiptLines(rules, "AAABBD")
         )
@@ -138,6 +149,7 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
                 ReceiptLine("Discount for 2 Bs", -15),
                 ReceiptLine("A", 50),
                 ReceiptLine("Discount for 3 As", -20),
+                ReceiptLine("Total", 190)
             ),
             priceAndReceiptLines(rules, "DABABA")
         )
@@ -145,7 +157,10 @@ class PlainAndDiscountedPriceRuleCheckoutTests {
 
 }
 
-fun priceAndReceiptLines(rules: List<PriceRule>, codes: String): Pair<Int, List<ReceiptLine>> =
+fun priceAndReceiptLines(
+    rules: List<PriceRule>,
+    codes: String,
+): Pair<Int, List<ReceiptLine>> =
     Checkout(rules).apply {
         scanAll(codes)
     }.let {

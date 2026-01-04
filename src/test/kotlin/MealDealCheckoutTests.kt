@@ -15,12 +15,14 @@ class MealDealCheckoutTests {
     fun `test meal deal`() {
         assertEquals(
             0 to listOf(
+                ReceiptLine("Total", 0)
             ),
             priceAndReceiptLines(rules, "")
         )
         assertEquals(
             50 to listOf(
                 ReceiptLine("A", 50),
+                ReceiptLine("Total", 50)
             ),
             priceAndReceiptLines(rules, "A")
         )
@@ -28,6 +30,7 @@ class MealDealCheckoutTests {
             80 to listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("B", 30),
+                ReceiptLine("Total", 80)
             ),
             priceAndReceiptLines(rules, "AB")
         )
@@ -37,6 +40,7 @@ class MealDealCheckoutTests {
                 ReceiptLine("B", 30),
                 ReceiptLine("C", 20),
                 ReceiptLine("Meal Deal ABC", -20),
+                ReceiptLine("Total", 80)
             ),
             priceAndReceiptLines(rules, "ABC")
         )
@@ -47,6 +51,7 @@ class MealDealCheckoutTests {
                 ReceiptLine("C", 20),
                 ReceiptLine("Meal Deal ABC", -20),
                 ReceiptLine("B", 30),
+                ReceiptLine("Total", 110)
             ),
             priceAndReceiptLines(rules, "ABCB")
         )
@@ -60,6 +65,7 @@ class MealDealCheckoutTests {
                 ReceiptLine("C", 20),
                 ReceiptLine("A", 50),
                 ReceiptLine("Meal Deal ABC", -20),
+                ReceiptLine("Total", 160)
             ),
             priceAndReceiptLines(rules, "ABCBCA")
         )
