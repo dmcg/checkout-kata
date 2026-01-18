@@ -1,29 +1,32 @@
+
+data class ReceiptLine(val description: String, val amount: Int)
+
+data class CheckoutState(
+    val codes: List<String> = emptyList(),
+    val itemLines: List<ReceiptLine> = emptyList(),
+) {
+    val total = itemLines.sumOf { it.amount }
+    val receiptLines: List<ReceiptLine>
+        get() = itemLines + ReceiptLine("Total", total)
+}
+
 interface PriceRule {
     fun receiptLine(currentCode: String, itemsCounts: Map<String, Int>): ReceiptLine?
 }
 
-class Checkout(private val priceRules: List<PriceRule>) {
-    val itemLines: MutableList<ReceiptLine> = mutableListOf()
-    val codes = mutableListOf<String>()
-    var total: Int = 0
-    val receiptLines: List<ReceiptLine>
-        get() = itemLines + ReceiptLine("Total", total)
-
-    fun scan(code: String) {
-        codes.add(code)
-        val itemsCounts: Map<String, Int> = codes.groupingBy {
-            it
-        }.eachCount()
-        itemLines.addAll(
-            priceRules.mapNotNull {
-                it.receiptLine(code, itemsCounts)
-            }
-        )
-        total = itemLines.sumOf { it.amount }
-    }
+fun List<PriceRule>.scan(
+    state: CheckoutState,
+    code: String,
+): CheckoutState {
+    val newCodes = state.codes + code
+    val itemsCounts: Map<String, Int> = newCodes.groupingBy {
+        it
+    }.eachCount()
+    val newItemLines = state.itemLines.plus(mapNotNull {
+        it.receiptLine(code, itemsCounts)
+    })
+    return state.copy(codes = newCodes, itemLines = newItemLines)
 }
-
-data class ReceiptLine(val description: String, val amount: Int)
 
 data class PlainPriceRule(
     private val code: String,

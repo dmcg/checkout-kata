@@ -14,38 +14,38 @@ class MealDealCheckoutTests {
     @Test
     fun `test meal deal`() {
         assertEquals(
-            0 to listOf(
+            listOf(
                 ReceiptLine("Total", 0)
             ),
-            priceAndReceiptLines(rules, "")
+            rules.scanAll("").receiptLines
         )
         assertEquals(
-            50 to listOf(
+            listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("Total", 50)
             ),
-            priceAndReceiptLines(rules, "A")
+            rules.scanAll("A").receiptLines
         )
         assertEquals(
-            80 to listOf(
+            listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("B", 30),
                 ReceiptLine("Total", 80)
             ),
-            priceAndReceiptLines(rules, "AB")
+            rules.scanAll("AB").receiptLines
         )
         assertEquals(
-            80 to listOf(
+            listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("B", 30),
                 ReceiptLine("C", 20),
                 ReceiptLine("Meal Deal ABC", -20),
                 ReceiptLine("Total", 80)
             ),
-            priceAndReceiptLines(rules, "ABC")
+            rules.scanAll("ABC").receiptLines
         )
         assertEquals(
-            110 to listOf(
+            listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("B", 30),
                 ReceiptLine("C", 20),
@@ -53,10 +53,10 @@ class MealDealCheckoutTests {
                 ReceiptLine("B", 30),
                 ReceiptLine("Total", 110)
             ),
-            priceAndReceiptLines(rules, "ABCB")
+            rules.scanAll("ABCB").receiptLines
         )
         assertEquals(
-            160 to listOf(
+            listOf(
                 ReceiptLine("A", 50),
                 ReceiptLine("B", 30),
                 ReceiptLine("C", 20),
@@ -67,7 +67,7 @@ class MealDealCheckoutTests {
                 ReceiptLine("Meal Deal ABC", -20),
                 ReceiptLine("Total", 160)
             ),
-            priceAndReceiptLines(rules, "ABCBCA")
+            rules.scanAll("ABCBCA").receiptLines
         )
     }
 }
